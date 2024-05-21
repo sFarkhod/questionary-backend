@@ -24,7 +24,7 @@ from drf_yasg import openapi
 from django.conf import settings
 from django.conf.urls.static import static
 
-from questionary.views import QuestionCreateView, QuestionListCreateView, QuestionListView, RegisterView, LoginView, PasswordResetConfirmView, PasswordResetRequestView, SubjectCreateView, SubjectListCreateView, SubjectListView, TeacherCreateView, TeacherListCreateView, TeacherListView, UserCreateView, UserDetailView
+from questionary.views import QuestionCreateView, QuestionListCreateView, QuestionListView, QuestionaryCreateView, RegisterView, LoginView, PasswordResetConfirmView, PasswordResetRequestView, SubjectCreateView, SubjectListCreateView, SubjectListView, TeacherCreateView, TeacherListCreateView, TeacherListView, UserCreateView, UserDetailView, questionary_delete, questionary_list, rating_stats, user_stats, user_table_stats
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -48,6 +48,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('confirm-code/', PasswordResetRequestView.as_view(), name='reset-password'),
     path('reset-password/', PasswordResetConfirmView.as_view(), name='reset-password-confirm'),
+    path('questionaries/', QuestionaryCreateView.as_view(), name='questionary-create'),
 
     # Helpers (Not Paginated data)
     path('subjects/', SubjectListView.as_view(), name='subject-list'),
@@ -63,6 +64,11 @@ urlpatterns = [
     path('admin/questions/<int:pk>/', QuestionCreateView.as_view(), name='teacher-detail'),
     path('admin/users/', UserCreateView.as_view(), name='user-create'),
     path('admin/users/<int:pk>/', UserDetailView.as_view(), name='user-update-delete'),
+    path('admin/questionaries/', questionary_list, name='questionary-list'),
+    path('admin/questionaries/<int:pk>/', questionary_delete, name='questionary-delete'),
+    path('admin/rating-stats/', rating_stats, name='rating-stats'),
+    path('admin/user-stats/', user_stats, name='user-stats'),
+    path('admin/user-table-stats/', user_table_stats, name='user-table-stats'),
 
 
     # swagger

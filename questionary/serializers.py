@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
-from .models import PasswordResetCode, Question, Subject, Teacher
+from .models import PasswordResetCode, Question, Questionary, Subject, Teacher
 from .settings import EMAIL_HOST_USER
 
 
@@ -129,3 +129,17 @@ class UserCreateUpdateSerializer(serializers.ModelSerializer):
         instance.is_staff = bool(validated_data.get('is_staff', instance.is_staff))
         instance.save()
         return instance
+    
+
+class QuestionarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Questionary
+        fields = '__all__'
+
+    def create(self, validated_data):
+        if validated_data['choice'] == 'anonym':
+            anonym_user, created = User.objects.get_or_create(username='anonym', defaults={'password': 'anonym'})
+            validated_data['user'] = anonym_user
+        else :
+            validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)

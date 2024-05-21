@@ -53,5 +53,11 @@ class Questionary(BaseModel):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     questions = models.JSONField()  
-    choices = models.CharField(max_length=20, choices=[('anonym', 'Anonym'), ('not anonym', 'Not Anonym')])
+    choice = models.CharField(max_length=20, choices=[('anonym', 'Anonym'), ('not anonym', 'Not Anonym')])
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+
+    def save(self, *args, **kwargs):
+        if self.choice == 'anonym':
+            anonym_user, created = User.objects.get_or_create(username='anonym', defaults={'password': 'anonym'})
+            self.user = anonym_user
+        super().save(*args, **kwargs)
